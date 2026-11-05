@@ -1,0 +1,22 @@
+identity:
+  name: get_chat
+  author: linq-team
+  label:
+    en_US: Get chat
+description:
+  human:
+    en_US: Get an existing Linq chat by ID.
+  llm: Get an existing Linq chat by ID.
+parameters:
+- name: chat_id
+  type: string
+  required: true
+  label:
+    en_US: Chat ID
+  human_description:
+    en_US: Existing Linq chat ID. Use the incoming trigger chat_id when replying.
+  llm_description: Existing Linq chat ID. Use the incoming trigger chat_id when replying.
+  form: llm
+extra:
+  python:
+    source: tools/get_chat.py

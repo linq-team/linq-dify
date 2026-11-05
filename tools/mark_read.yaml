@@ -1,0 +1,22 @@
+identity:
+  name: mark_read
+  author: linq-team
+  label:
+    en_US: Mark chat read
+description:
+  human:
+    en_US: Mark messages in an existing chat as read.
+  llm: Mark messages in an existing chat as read.
+parameters:
+- name: chat_id
+  type: string
+  required: true
+  label:
+    en_US: Chat ID
+  human_description:
+    en_US: Existing Linq chat ID. Use the incoming trigger chat_id when replying.
+  llm_description: Existing Linq chat ID. Use the incoming trigger chat_id when replying.
+  form: llm
+extra:
+  python:
+    source: tools/mark_read.py

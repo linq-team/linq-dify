@@ -1,0 +1,39 @@
+version: 0.1.0
+type: plugin
+author: linq-team
+name: linq
+label:
+  en_US: Linq
+description:
+  en_US: Send text, read conversations, and manage read/typing state through the Linq
+    Partner API for iMessage, RCS, and SMS.
+icon: icon.svg
+resource:
+  memory: 268435456
+  permission:
+    tool:
+      enabled: true
+plugins:
+  tools:
+  - provider/linq.yaml
+tags:
+- social
+- productivity
+meta:
+  version: 0.0.1
+  arch:
+  - amd64
+  - arm64
+  runner:
+    language: python
+    version: '3.12'
+    entrypoint: main
+  minimum_dify_version: 1.17.1
+privacy: PRIVACY.md
+repo: https://github.com/linq-team/linq-dify
+contact: support@linqapp.com
+network:
+  domains:
+  - api.linqapp.com
+created_at: '2026-11-05T20:00:00Z'
+verified: false

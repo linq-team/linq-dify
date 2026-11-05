@@ -1,0 +1,84 @@
+identity:
+  name: send_message
+  author: linq-team
+  label:
+    en_US: Send message
+description:
+  human:
+    en_US: Send text through Linq. Supply chat_id to reply, or to and optionally from_number
+      to start/reuse a conversation. Linq chooses the channel. Accepted does not mean
+      delivered. Requires a stable idempotency key; reuse it only for retries of the
+      same send.
+  llm: Send text through Linq. Supply chat_id to reply, or to and optionally from_number
+    to start/reuse a conversation. Linq chooses the channel. Accepted does not mean
+    delivered. Requires a stable idempotency key; reuse it only for retries of the
+    same send.
+parameters:
+- name: text
+  type: string
+  required: true
+  label:
+    en_US: Message
+  human_description:
+    en_US: Exact text to send.
+  llm_description: Exact text to send.
+  form: llm
+- name: idempotency_key
+  type: string
+  required: true
+  label:
+    en_US: Idempotency key
+  human_description:
+    en_US: Stable unique key for this send. For one reply per incoming message, use
+      the trigger reply_idempotency_key. Keep the same key across retries.
+  llm_description: Stable unique key for this send. For one reply per incoming message,
+    use the trigger reply_idempotency_key. Keep the same key across retries.
+  form: llm
+- name: chat_id
+  type: string
+  required: false
+  label:
+    en_US: Chat ID
+  human_description:
+    en_US: Existing chat to reply to. Leave to and from_number empty when supplied.
+  llm_description: Existing chat to reply to. Leave to and from_number empty when
+    supplied.
+  form: llm
+- name: to
+  type: string
+  required: false
+  label:
+    en_US: Recipients
+  human_description:
+    en_US: Comma-separated E.164 phone numbers or email addresses (1–31). Only for
+      sends without chat_id.
+  llm_description: Comma-separated E.164 phone numbers or email addresses (1–31).
+    Only for sends without chat_id.
+  form: llm
+- name: from_number
+  type: string
+  required: false
+  label:
+    en_US: Sender line
+  human_description:
+    en_US: Optional Linq line in E.164 format. Without it Linq chooses a line. Only
+      for sends without chat_id.
+  llm_description: Optional Linq line in E.164 format. Without it Linq chooses a line.
+    Only for sends without chat_id.
+  form: llm
+extra:
+  python:
+    source: tools/send_message.py
+output_schema:
+  type: object
+  properties:
+    chat_id:
+      type: string
+    message_id:
+      type: string
+    from_number:
+      type: string
+    idempotency_key:
+      type: string
+    status:
+      type: string

@@ -1,0 +1,40 @@
+identity:
+  name: set_typing
+  author: linq-team
+  label:
+    en_US: Set typing indicator
+description:
+  human:
+    en_US: Start or stop the typing indicator for a direct conversation. Channel restrictions
+      apply.
+  llm: Start or stop the typing indicator for a direct conversation. Channel restrictions
+    apply.
+parameters:
+- name: chat_id
+  type: string
+  required: true
+  label:
+    en_US: Chat ID
+  human_description:
+    en_US: Existing Linq chat ID. Use the incoming trigger chat_id when replying.
+  llm_description: Existing Linq chat ID. Use the incoming trigger chat_id when replying.
+  form: llm
+- name: action
+  type: select
+  required: true
+  label:
+    en_US: Action
+  human_description:
+    en_US: Start or stop typing.
+  llm_description: Start or stop typing.
+  form: llm
+  options:
+  - value: start
+    label:
+      en_US: Start
+  - value: stop
+    label:
+      en_US: Stop
+extra:
+  python:
+    source: tools/set_typing.py
