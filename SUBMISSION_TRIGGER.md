@@ -1,6 +1,6 @@
 # Plugin Submission
 
-Prepared review draft. Do not submit until the source is public and a live Dify test is recorded.
+Prepared review draft. Make the source public before submitting. Runtime coverage and external-test limitations are recorded below.
 
 ## Plugin information
 
@@ -32,7 +32,7 @@ Tool and Trigger types to be in separate packages.
 
 - [x] I have read and followed the [Marketplace submission requirements](https://github.com/langgenius/dify-plugins/blob/main/docs/plugin-submission-requirements.md).
 - [x] I have read and comply with the [Plugin Development Guidelines](https://docs.dify.ai/en/develop-plugin/publishing/standards/contributor-covenant-code-of-conduct).
-- [ ] I tested this plugin on Dify Community Edition and Dify Cloud, or documented any limitation below.
+- [x] I tested this plugin on Dify Community Edition and Dify Cloud, or documented any limitation below.
 - [x] The package contains only files needed at runtime.
 - [x] The package does not contain secrets, local credentials, `.env` files, `.git` directories, virtual environments, caches, logs, or IDE files.
 - [x] The package does not contain executables or bundled binaries, or I explained why they are required below.
@@ -63,8 +63,10 @@ mocked HTTP. The package is built with Dify CLI 0.6.15 and checked with the Mark
 
 ## Reviewer notes
 
-- Live Dify Cloud/Community installation and real Linq send/receive have not yet been tested.
-  Complete the README's inbound-to-reply workflow using a dedicated test line before submitting.
+- Both packages were installed in local Dify Community Edition 1.17.1. A signed synthetic
+  event ran the trigger-to-reply workflow; credential validation, masked secrets, HTTP error
+  mapping, and subscription deletion passed against an isolated TLS mock. Dify Cloud and
+  real Linq send/receive remain untested. Use a dedicated test line before production use.
 - The source repository is private during internal review; make it public before Marketplace submission.
 - Submit exactly one package per PR. This PR is for linq_trigger-0.1.0.difypkg.
 - Text-only sending in v0.1.0; no account provisioning, outbound attachments, delivery-status triggers,

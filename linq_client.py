@@ -194,10 +194,11 @@ class LinqClient:
             raise LinqError(
                 "Linq returned an invalid send response. Retry with the same idempotency key."
             )
+        result_sender = result.get("from")
         return {
             "chat_id": result_chat_id,
             "message_id": message_id,
-            "from_number": result.get("from") or sender or "",
+            "from_number": result_sender if isinstance(result_sender, str) else sender or "",
             "idempotency_key": key,
             "status": "accepted",
             "result": result,

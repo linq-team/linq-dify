@@ -41,6 +41,21 @@ def test_send_routes_and_ids(api, params, path, expected):
     assert result["status"] == "accepted"
 
 
+@pytest.mark.parametrize("reported_sender", [None, {"unexpected": "object"}, 123])
+def test_send_keeps_sender_output_a_string(api, reported_sender):
+    _, responses = api
+    responses.append(
+        httpx.Response(
+            201, json={"chat_id": "c1", "message": {"id": "m1"}, "from": reported_sender}
+        )
+    )
+    result = LinqClient("test-key").send(
+        {"chat_id": "c1", "text": "Hello", "idempotency_key": "same-key"}
+    )
+    assert result["status"] == "accepted"
+    assert result["from_number"] == ""
+
+
 @pytest.mark.parametrize("status", [408, 425, 429, 500, 503])
 def test_transient_errors_reuse_identical_send(api, status):
     requests, responses = api

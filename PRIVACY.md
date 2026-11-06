@@ -15,6 +15,8 @@ zero-retention integration.
   parts are passed to Dify. Parts can include media URLs and other identifying information.
   This plugin does not download those URLs. Reconciled messages and messages marked zero-retention
   are not passed to workflows.
+  Dify uses the sender's phone number or email as the trigger's end-user identifier and can
+  retain associated end-user records.
 - **Webhook subscription:** creating a trigger sends Dify's public callback URL and optional line
   filters to Linq. The signing secret and subscription ID returned by Linq are stored in Dify's
   subscription settings. Deleting an automatically managed subscription requests its removal

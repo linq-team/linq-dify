@@ -5,7 +5,7 @@ These are internal review packages, not Marketplace-approved releases.
 
 ## Verified
 
-- `python -m pytest -q`: **80 passed**. Includes all six tools through the Dify SDK,
+- `python -m pytest -q`: **83 passed**. Includes all six tools through the Dify SDK,
   send routing and response IDs, unchanged idempotency keys across retries, HTTP error redaction,
   timeouts, provisioning-conflict retries, malformed-send rejection, pagination/input validation,
   signature rejection, timestamp checks, inbound filtering,
@@ -50,16 +50,24 @@ The Marketplace Toolkit requires its `yq` dependency. This build used toolkit co
   outbound host and runtime dependencies are pinned.
 - Pytest reports upstream SDK warnings for gevent import order in the test process and a
   Pydantic deprecation. The fresh plugin process initializes the SDK before HTTP clients.
+- A real local Dify Community Edition 1.17.1 deployment (plugin daemon 0.6.10-local)
+  installed both packaged plugins through its package-upload API. It validated credentials,
+  created a managed subscription, masked its API key and signing secret in the subscription
+  API, and deleted the upstream subscription on removal. A signed synthetic inbound event
+  returned HTTP 200 and ran a published trigger-to-send workflow, producing exactly one
+  reply request in the incoming chat with key `dify-reply:runtime-msg-2`. Invalid signatures
+  and old payload versions returned HTTP 400. The fixed Linq hostname resolved to an
+  isolated TLS mock with a trusted test CA; no real message was sent. This exercised the
+  Dify runtime, persistence, queue, and plugin processes, rather than replacing SDK calls.
 - The API contract was checked against Linq's published v3 OpenAPI and the Convex component at
   commit `9d1ef531e2950afd7521912c0747a16fb1addcce`.
 
 ## Not yet verified
 
-No Dify Cloud or Community UI installation, real Linq credentials, real outbound message,
-or external inbound webhook delivery has been exercised. Complete the README's test workflow
-on a dedicated line before production use or Marketplace submission. In particular, verify
-subscription secret handling in the target Dify version and one inbound message producing one
-intended reply. Source visibility, Marketplace duplicate-version checks, upstream PR metadata,
+Dify Cloud, browser-driven setup, real Linq credentials, real outbound delivery, and external
+inbound webhook delivery have not been exercised. Complete the README's test workflow on a
+dedicated line before production use. The local Community runtime smoke above used synthetic
+traffic and does not prove external Linq connectivity or real delivery. Source visibility, Marketplace duplicate-version checks, upstream PR metadata,
 and Dify's human review remain release steps.
 
 The source repository remains private during internal review. Each Marketplace submission
