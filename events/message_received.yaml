@@ -1,0 +1,52 @@
+identity:
+  name: message_received
+  author: linq-team
+  label:
+    en_US: Message received
+description:
+  en_US: New inbound messages only. Skips your own sends, reconciled messages, and
+    zero-retention lines. Media-only messages have empty text.
+parameters: []
+output_schema:
+  type: object
+  properties:
+    event_id:
+      type: string
+      description: Signed webhook event ID.
+    message_id:
+      type: string
+      description: Incoming Linq message ID.
+    chat_id:
+      type: string
+      description: Pass to Send message to reply in the same conversation.
+    sender:
+      type: string
+      description: Sender phone number or email address.
+    line:
+      type: string
+      description: Receiving Linq line.
+    text:
+      type: string
+      description: Text parts joined by newlines. Empty for media-only messages.
+    service:
+      type: string
+      description: Messaging service reported by Linq.
+    is_group:
+      type: boolean
+      description: Whether this is a group chat.
+    sent_at:
+      type: string
+      description: Timestamp reported by Linq.
+    reply_idempotency_key:
+      type: string
+      description: Stable key for one reply to this message. Pass to Send message
+        idempotency_key.
+    parts:
+      type: array
+      items:
+        type: object
+      description: Original message parts. URLs are returned as data and are not fetched
+        by the plugin.
+extra:
+  python:
+    source: events/message_received.py

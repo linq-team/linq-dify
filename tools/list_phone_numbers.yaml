@@ -1,0 +1,13 @@
+identity:
+  name: list_phone_numbers
+  author: linq-team
+  label:
+    en_US: List phone numbers
+description:
+  human:
+    en_US: List the Linq phone numbers accessible to this API key.
+  llm: List the Linq phone numbers accessible to this API key.
+parameters: []
+extra:
+  python:
+    source: tools/list_phone_numbers.py

@@ -1,0 +1,45 @@
+identity:
+  name: list_messages
+  author: linq-team
+  label:
+    en_US: List messages
+description:
+  human:
+    en_US: Read one page of messages in an existing chat. Pass next_cursor from the
+      result as cursor for the next page.
+  llm: Read one page of messages in an existing chat. Pass next_cursor from the result
+    as cursor for the next page.
+parameters:
+- name: chat_id
+  type: string
+  required: true
+  label:
+    en_US: Chat ID
+  human_description:
+    en_US: Existing Linq chat ID. Use the incoming trigger chat_id when replying.
+  llm_description: Existing Linq chat ID. Use the incoming trigger chat_id when replying.
+  form: llm
+- name: limit
+  type: number
+  required: false
+  label:
+    en_US: Page size
+  human_description:
+    en_US: Messages per page, 1–100.
+  llm_description: Messages per page, 1–100.
+  form: llm
+  default: 20
+  min: 1
+  max: 100
+- name: cursor
+  type: string
+  required: false
+  label:
+    en_US: Cursor
+  human_description:
+    en_US: Pagination cursor returned by the previous request.
+  llm_description: Pagination cursor returned by the previous request.
+  form: llm
+extra:
+  python:
+    source: tools/list_messages.py

@@ -1,0 +1,51 @@
+identity:
+  author: linq-team
+  name: linq_trigger
+  label:
+    en_US: Linq
+  description:
+    en_US: Start a workflow when a new inbound message arrives on a Linq line.
+  icon: icon.svg
+subscription_schema:
+- name: signing_secret
+  type: secret-input
+  required: true
+  label:
+    en_US: Webhook signing secret
+  help:
+    en_US: Saved automatically when Dify creates the subscription. For manual setup
+      use the whsec_ secret returned by Linq.
+- name: subscription_id
+  type: text-input
+  required: false
+  label:
+    en_US: Linq subscription ID
+  help:
+    en_US: Saved automatically. Leave empty for manually managed subscriptions.
+subscription_constructor:
+  credentials_schema:
+    api_key:
+      type: secret-input
+      required: true
+      label:
+        en_US: Linq API key
+      help:
+        en_US: Enter your Linq Partner API key without Bearer. Use a key with access
+          to the intended lines.
+      placeholder:
+        en_US: Linq API key
+      url: https://docs.linqapp.com/channel/imessage/
+  parameters:
+  - name: phone_numbers
+    type: string
+    required: false
+    label:
+      en_US: Linq lines
+    description:
+      en_US: Optional comma-separated E.164 Linq lines. Empty subscribes to all lines
+        this key can access.
+events:
+- events/message_received.yaml
+extra:
+  python:
+    source: provider/linq_trigger.py
