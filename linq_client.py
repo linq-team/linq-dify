@@ -128,7 +128,17 @@ class LinqClient:
                     ),
                     status,
                 )
-                retryable = status in (408, 425, 429) or status >= 500
+                code = None
+                if status == 409:
+                    try:
+                        payload = response.json()
+                        detail = payload.get("error") if isinstance(payload, dict) else None
+                        code = detail.get("code") if isinstance(detail, dict) else None
+                    except ValueError:
+                        pass
+                retryable = (
+                    status in (408, 425, 429) or status >= 500 or (status == 409 and code == 2009)
+                )
             if not retryable or attempt == attempts - 1:
                 raise error
             delay = RETRY_DELAYS[attempt]
@@ -168,11 +178,25 @@ class LinqClient:
             if sender:
                 body["from"] = phone_number(required_text(sender, "from_number").strip())
             result = self.request("POST", "/chats" if sender else "/messages", body=body)
-        chat = result.get("chat") or {}
+        raw_chat = result.get("chat")
+        chat = raw_chat if isinstance(raw_chat, dict) else {}
         sent = result.get("message") or chat.get("message") or {}
+        message_id = sent.get("id") if isinstance(sent, dict) else None
+        result_chat_id = (
+            result.get("chat_id") or (chat.get("id") if isinstance(chat, dict) else None) or chat_id
+        )
+        if (
+            not isinstance(message_id, str)
+            or not message_id
+            or not isinstance(result_chat_id, str)
+            or not result_chat_id
+        ):
+            raise LinqError(
+                "Linq returned an invalid send response. Retry with the same idempotency key."
+            )
         return {
-            "chat_id": result.get("chat_id") or chat.get("id") or chat_id or "",
-            "message_id": sent.get("id") or "",
+            "chat_id": result_chat_id,
+            "message_id": message_id,
             "from_number": result.get("from") or sender or "",
             "idempotency_key": key,
             "status": "accepted",

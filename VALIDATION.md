@@ -1,18 +1,20 @@
 # Validation — 0.1.0 review build
 
-Verified on November 5, 2026 using Python 3.12.16, Dify Plugin SDK 0.11.0, and Dify CLI 0.6.15.
+Verified on November 6, 2026 using Python 3.12.16, Dify Plugin SDK 0.11.0, and Dify CLI 0.6.15.
 These are internal review packages, not Marketplace-approved releases.
 
 ## Verified
 
-- `python -m pytest -q`: **74 passed**. Includes all six tools through the Dify SDK,
+- `python -m pytest -q`: **80 passed**. Includes all six tools through the Dify SDK,
   send routing and response IDs, unchanged idempotency keys across retries, HTTP error redaction,
-  timeouts, pagination/input validation, signature rejection, timestamp checks, inbound filtering,
+  timeouts, provisioning-conflict retries, malformed-send rejection, pagination/input validation,
+  signature rejection, timestamp checks, inbound filtering,
   subscription creation/deletion, and separate Tool/Trigger registration.
 - Fresh Python processes start both staged plugins. The Tool process accepts a real Dify
   protocol request and returns a successful synthetic send plus its output variables. HTTP is
   mocked in this test; no real messages are sent.
 - `ruff check .` and `ruff format --check .`: passed.
+- CI also builds and uploads both packages with a checksum-pinned Dify CLI.
 - Both packages build with the Dify CLI, with tools and triggers separated as required by the
   daemon's `PluginDeclaration.ManifestValidate` in version 0.6.15.
 - Marketplace Toolkit checks: **zero blocking failures for each package**, including package

@@ -51,10 +51,13 @@ For multiple replies to one incoming message, append a stable suffix (`:1`, `:2`
 For outbound campaigns or scheduled workflows, derive the key from a durable job/event ID.
 Do not generate a different random key on every workflow retry.
 
-The client retries transient failures twice with the same request body and key, uses a 10-second
+The client retries transient failures twice (including HTTP 409/error 2009 while a chat is
+being created) with the same request body and key, uses a 10-second
 timeout per HTTP operation, and respects Retry-After up to five seconds. Longer waits return an
 error so the workflow can retry later. Error messages do not expose response bodies, credentials,
-or message content. Changing the API host, following redirects, and disabling TLS verification
+or message content. A successful HTTP response without the required send identifiers is treated
+as an unknown result, not acceptance; retry it with the same key. Changing the API host,
+following redirects, and disabling TLS verification
 are not supported.
 
 ## Receive messages and reply

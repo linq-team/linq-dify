@@ -140,3 +140,37 @@ def test_no_retry_for_subscription_creation(api):
     with pytest.raises(LinqError):
         LinqClient("test-key").request("POST", "/webhook-subscriptions", body={}, retry=False)
     assert len(requests) == 1
+
+
+def test_chat_still_creating_retries_with_the_same_send(api):
+    requests, responses = api
+    responses.extend(
+        [
+            httpx.Response(409, json={"error": {"code": 2009, "message": "still creating"}}),
+            httpx.Response(201, json={"chat_id": "c1", "message": {"id": "m1"}}),
+        ]
+    )
+    result = LinqClient("test-key").send(
+        {"chat_id": "c1", "text": "Hello", "idempotency_key": "same-key"}
+    )
+    assert result["message_id"] == "m1"
+    assert len(requests) == 2
+    assert requests[0].content == requests[1].content
+
+
+def test_other_conflicts_are_not_retried(api):
+    requests, responses = api
+    responses.append(httpx.Response(409, json={"error": {"code": 2015}}))
+    with pytest.raises(LinqError):
+        LinqClient("test-key").request("GET", "/phone_numbers")
+    assert len(requests) == 1
+
+
+@pytest.mark.parametrize("body", ["", "{}", '{"chat_id":"c1"}', '{"chat":[]}'])
+def test_malformed_success_does_not_report_send_accepted(api, body):
+    _, responses = api
+    responses.append(httpx.Response(200, text=body))
+    with pytest.raises(LinqError, match="same idempotency key"):
+        LinqClient("test-key").send(
+            {"chat_id": "c1", "text": "Hello", "idempotency_key": "same-key"}
+        )
